@@ -1,0 +1,25 @@
+#!/bin/bash
+ 
+source ~/.bashrc
+
+AWS_ACCESS_KEY=<%= @params["AWS_ACCESS_KEY"] %>
+AWS_SECRET_KEY=<%= @params["AWS_SECRET_KEY"] %>
+AWS_REGION=<%= @params["AWS_REGION"] %>
+
+AWS_GENERAL_OPTION="-I ${AWS_ACCESS_KEY} -S ${AWS_SECRET_KEY} --region ${AWS_REGION}"
+target='/'
+ 
+if [ -n "$1" ]; then
+    target=$1
+fi
+ 
+# インスタンスID取得 
+instanceid=`wget -q -O - http://169.254.169.254/latest/meta-data/instance-id`
+
+# カスタムメトリクス（空き容量）
+freespace=`df --local --block-size=1M $target | grep $target | tr -s ' ' | cut -d ' ' -f 4`
+mon-put-data --metric-name "FreeSpaceMBytes(Path=${target})" --namespace "System/Linux" --dimensions "InstanceId=${instanceid},Path=${target}" --value "${freespace}" --unit "Megabytes" ${AWS_GENERAL_OPTION}
+
+# カスタムメトリクス（利用率）
+usedpercent=`df --local $target | grep $target | tr -s ' ' | cut -d ' ' -f 5 | grep -o "[0-9]*"`
+mon-put-data --metric-name "UsedSpacePercent(Path=${target})" --namespace "System/Linux" --dimensions "InstanceId=${instanceid},Path=${target}" --value "${usedpercent}" --unit "Percent" ${AWS_GENERAL_OPTION}

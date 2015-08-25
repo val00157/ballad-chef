@@ -1,0 +1,19 @@
+{
+  "id": "ballad-local",
+  "CloudWatch": {
+    "AWS_ACCESS_KEY": "",
+    "AWS_SECRET_KEY": "",
+    "AWS_REGION": "ap-northeast-1",
+    "disk-usage": {
+      "MONITORING_MOUNT_DIRECTORY": "/"
+    },
+    "Alarms" : [
+        {
+            "CW_ALARM_NAME": "ballad-es-High-Usage-Space",
+            "CW_METRIC_NAME": "UsedSpacePercent(Path=/)",
+            "CW_THRESHOLD_VALUE": "65",
+            "CW_ALARM_ACTION_ARN": ""
+        }
+    ]
+  }
+}

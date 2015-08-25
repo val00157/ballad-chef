@@ -1,0 +1,84 @@
+<source>
+    type tail
+    format /^(?<host>[^ ]*) (?<x-forwarded-for>.*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$/
+    time_format %d/%b/%Y:%H:%M:%S %z
+    path /var/log/tomcat7/access.log
+    tag tomcat7
+    pos_file /var/log/td-agent/tomcat.pos
+</source>
+<source>
+    type tail
+    format /^(?<message>.*)$/
+    path /var/log/tomcat7/addeli.log
+    tag addeli
+    pos_file /var/log/td-agent/addeli.pos
+</source>
+<source>
+    type tail
+    format /^(?<message>.*)$/
+    path /var/log/tomcat7/adimp.log
+    tag adimps
+    pos_file /var/log/td-agent/adimp.pos
+</source>
+<source>
+    type tail
+    format /^(?<message>.*)$/
+    path /var/log/tomcat7/adclick.log
+    tag adclick
+    pos_file /var/log/td-agent/adclick.pos
+</source>
+<source>
+    type tail
+    format json
+    path /var/log/tomcat7/adRequest.log
+    tag adrequest
+    pos_file /var/log/td-agent/adRequest.pos
+</source>
+
+<match fluent.*>
+  type stdout
+</match>
+<match **>
+  type forest
+  subtype copy
+  <template>
+    <store>
+      type s3
+      aws_key_id <%= @params["AWS_ACCESS_KEY"] %> 
+      aws_sec_key <%= @params["AWS_SECRET_KEY"] %>
+
+      s3_bucket ballad-beta-log
+      s3_region ap-northeast-1
+      path logs/
+      store_as text
+
+      buffer_path /var/log/td-agent/buffer/s3/${tag}
+      time_slice_format ${tag}/%Y/%m/%d/%Y%m%d-%H-${hostname}
+
+      buffer_chunk_limit 10m
+      buffer_queue_limit 128
+      flush_interval 15m
+      retry_wait 30s
+      retry_limit 10
+
+      flush_at_shutdown true
+    </store>
+  </template>
+  <case {adrequest,adclick}>
+    <store>
+      type forward
+      buffer_type file
+      buffer_path /var/log/td-agent/buffer/elasticsearch/${tag}
+      buffer_chunk_limit 256m
+      buffer_queue_limit 128
+      flush_interval 5s
+      heartbeat_type tcp
+      <server>
+        host internal-elb-elasticsearch-internal-dev-649989452.ap-northeast-1.elb.amazonaws.com
+        port 24224
+      </server>
+    </store>
+  </case>
+</match>
+
+

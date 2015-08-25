@@ -1,0 +1,67 @@
+<source>
+  type config_expander
+  <config>
+    type tail
+    format /^(?<host>[^ ]*) (?<x-forwarded-for>.*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$/
+    time_format %d/%b/%Y:%H:%M:%S %z
+    path /var/log/tomcat7/access.log
+    tag tomcat7
+    pos_file /var/log/td-agent/tomcat.pos
+  </config>
+</source>
+<source>
+  type config_expander
+  <config>
+    type tail
+    format /^(?<message>.*)$/
+    path /var/log/tomcat7/addeli.log
+    tag adDeli
+    pos_file /var/log/td-agent/addeli.pos
+  </config>
+</source>
+<source>
+  type config_expander
+  <config>
+    type tail
+    format /^(?<message>.*)$/
+    path /var/log/tomcat7/adimp.log
+    tag adImps
+    pos_file /var/log/td-agent/adimp.pos
+  </config>
+</source>
+<source>
+  type config_expander
+  <config>
+    type tail
+    format /^(?<message>.*)$/
+    path /var/log/tomcat7/adclick.log
+    tag adClick
+    pos_file /var/log/td-agent/adclick.pos
+  </config>
+</source>
+
+<match *>
+  type forest
+  subtype s3
+  <template>
+    aws_key_id <%= @params["AWS_ACCESS_KEY"] %> 
+    aws_sec_key <%= @params["AWS_SECRET_KEY"] %>
+
+    s3_bucket ballad-log
+    s3_endpoint s3-ap-northeast-1.amazonaws.com
+    path logs/
+    store_as text
+
+    buffer_path /var/log/td-agent/buffer/s3/${tag}
+    time_slice_format ${tag}/%Y/%m/%d/%Y%m%d-%H-${hostname}
+
+    buffer_chunk_limit 10m
+    buffer_queue_limit 128
+    flush_interval 15m
+    retry_wait 45s
+    retry_limit 10
+
+    flush_at_shutdown true
+  </template>
+</match>
+

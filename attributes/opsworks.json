@@ -1,0 +1,8 @@
+{
+  "opsworks": {
+    "stack": {
+      "name": "ballad-local"
+    }
+  }
+}
+

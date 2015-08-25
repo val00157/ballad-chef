@@ -1,0 +1,27 @@
+/var/log/tomcat7/catalina.out {
+    copytruncate
+    daily
+    rotate 28
+    compress
+    missingok
+    create 0644 tomcat tomcat
+}
+
+/var/log/tomcat7/ad*.log {
+    copytruncate
+    daily
+    rotate 28
+    compress
+    missingok
+    create 0644 tomcat tomcat
+}
+
+/var/log/tomcat7/access.log {
+    copytruncate
+    daily
+    rotate 28
+    compress
+    missingok
+    create 0644 tomcat tomcat
+}
+

@@ -1,0 +1,44 @@
+#!/bin/bash
+#
+# /etc/rc.d/init.d/setBalladConfig
+#
+# chkconfig: - 75 20
+# description: setBalladConfig
+# processname: setBalladConfig
+#
+
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+
+start() {
+  INSTANCE_ID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
+  export INSTANCE_NAME=`ec2-describe-instances | grep ${INSTANCE_ID} | grep $'\t'Name | cut -f5`
+  echo ${INSTANCE_NAME}
+
+  case  ${INSTANCE_NAME} in
+    ballad-dev)
+        cp -f /etc/td-agent/td-agent.dev /etc/td-agent/td-agent.conf
+        ;;
+    ballad-beta)
+        cp -f /etc/td-agent/td-agent.beta /etc/td-agent/td-agent.conf
+        ;;
+    val-ad)
+        cp -f /etc/td-agent/td-agent.ballad /etc/td-agent/td-agent.conf
+        ;;
+    *)
+        return
+        ;;
+  esac
+
+  touch /var/log/td-agent/${INSTANCE_NAME}
+}
+
+case "$1" in
+  start)
+      start
+      ;;
+  *)
+      echo "setBalladConfig.sh start"
+esac
+
