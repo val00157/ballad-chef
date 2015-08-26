@@ -1,3 +1,6 @@
+stack = node[:opsworks][:stack][:name] 
+params = data_bag_item("td-agent", stack)["td-agent"]
+
 # confファイルのコピー
 %w{
   ballad
