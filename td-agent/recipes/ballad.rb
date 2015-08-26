@@ -15,3 +15,6 @@ params = data_bag_item("td-agent", stack)["td-agent"]
   end
 end
 
+service "setBalladConfig" do
+  action :start
+end
