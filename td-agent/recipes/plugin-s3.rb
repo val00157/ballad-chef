@@ -1,4 +1,4 @@
-# elasticsearchプラグインのインストール
+# S3プラグインのインストール
 gem_package "fluent-plugin-s3" do
   gem_binary "/opt/td-agent/embedded/bin/fluent-gem"
   action :install
