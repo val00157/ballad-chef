@@ -13,4 +13,7 @@ bash "monit_config" do
     done
   EOL
 end
+service "monit" do
+  action :restart
+end
 
