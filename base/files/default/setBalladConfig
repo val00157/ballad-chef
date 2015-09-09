@@ -34,15 +34,15 @@ start() {
   echo ${INSTANCE_NAME}
 
   case  ${INSTANCE_NAME} in
-    ballad-dev)
+    ballad-dev*)
         setResolve ballad-dev
         cp -f /etc/td-agent/td-agent.dev /etc/td-agent/td-agent.conf
         ;;
-    ballad-beta)
+    ballad-beta*)
         setResolve ballad-dev
         cp -f /etc/td-agent/td-agent.beta /etc/td-agent/td-agent.conf
         ;;
-    val-ad)
+    val-ad*)
         setResolve ballad
         cp -f /etc/td-agent/td-agent.ballad /etc/td-agent/td-agent.conf
         ;;
