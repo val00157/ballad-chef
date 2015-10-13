@@ -16,14 +16,16 @@ link "/etc/localtime" do
   to "/usr/share/zoneinfo/Asia/Tokyo"
 end
 
-# パッケージインストール（tree, mlocate）
+# パッケージインストール（tree, mlocate, jq）
 package "tree" do
   action :install
 end
 package "mlocate" do
   action :install
 end
-
+package "jq" do
+  action :install
+end
 
 bash "set_region" do
   code <<-EOL

@@ -17,7 +17,8 @@
       port 9200
       logstash_format true
       logstash_prefix ${tag}
-      logstash_dateformat %Y%m
+      logstash_dateformat %Y%m%d
+      buffer_queue_limit 128
     </store>
   </template>
 </match>
