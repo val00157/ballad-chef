@@ -16,6 +16,17 @@ template "/etc/elasticsearch/elasticsearch.yml" do
   )
 end
 
+bash "" do
+  user "root"
+  cwd "/etc/sysconfig/"
+  code <<-EOC
+    sed -i -e "s/#*ES_HEAP_SIZE=.*/ES_HEAP_SIZE=18000M/" elasticsearch
+    if [ `grep -i -c "ES_HEAP_SIZE" elasticsearch` -eq 0 ]; then 
+      echo "ES_HEAP_SIZE=18000M" > elasticsearch
+    fi
+  EOC
+end
+
 service "elasticsearch" do
   supports :status => true, :restart => true
   action [:enable, :restart]
