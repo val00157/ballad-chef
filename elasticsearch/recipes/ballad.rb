@@ -1,3 +1,8 @@
+# gemパッケージtireインストール
+gem_package "tire" do
+  action :install
+end
+
 # indexの再作成スクリプトと日次で実行するスクリプトを展開する
 template "/home/ec2-user/reindex.rb" do
   source "reindex.rb"
