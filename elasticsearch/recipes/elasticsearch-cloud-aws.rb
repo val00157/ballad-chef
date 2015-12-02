@@ -22,12 +22,16 @@ end
 bash "set_sysconfig" do
   user "root"
   cwd "/etc/sysconfig/"
-  code <<-EOC
-    sed -i -e "s/#*ES_HEAP_SIZE=.*/ES_HEAP_SIZE=18000M/" elasticsearch
-    if [ `grep -i -c "ES_HEAP_SIZE" elasticsearch` -eq 0 ]; then 
-      echo "ES_HEAP_SIZE=18000M" > elasticsearch
-    fi
-  EOC
+
+  targets = params["sysconfig"]
+  targets.each do |key, value|   
+    code <<-EOC
+      sed -i -e "s/#*#{key}=.*/#{key}=#{value}/" elasticsearch
+      if [ `grep -i -c "#{key}" elasticsearch` -eq 0 ]; then 
+        echo "#{key}=#{value}" > elasticsearch
+      fi
+    EOC
+  end
 end
 
 # サービスを開始する。

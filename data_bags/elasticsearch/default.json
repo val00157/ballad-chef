@@ -7,6 +7,9 @@
     "AWS_REGION" : "ap-northeast-1",
     "AWS_AVAILABILITY_ZONES" : "ap-northeast-1a,ap-northeast-1c",
     "AWS_ES_SECURITY_GROUPS" : "ballad-dev-elasticsearch"
+    "sysconfig" : {
+      "ES_HEAP_SIZE" : "1800M"
+    }
   }
 }
 
