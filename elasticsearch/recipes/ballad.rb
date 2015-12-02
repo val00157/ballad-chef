@@ -4,10 +4,10 @@ gem_package "tire" do
 end
 
 # indexの再作成スクリプトと日次で実行するスクリプトを展開する
-template "/home/ec2-user/reindex.rb" do
+cookbook_file "/home/ec2-user/reindex.rb" do
   source "reindex.rb"
 end
-template "/home/ec2-user/generate_index.sh" do
+cookbook_file "/home/ec2-user/generate_index.sh" do
   source "generate_index.sh"
 end
 
