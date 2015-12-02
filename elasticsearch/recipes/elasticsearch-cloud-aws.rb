@@ -1,6 +1,7 @@
 stack = node[:opsworks][:stack][:name] 
 params = data_bag_item("elasticsearch", stack)["elasticsearch"]
 
+# インストール
 bash "elasticsearch-cloud-aws" do
   cwd "/usr/share/elasticsearch"
   code <<-EOC
@@ -9,6 +10,7 @@ bash "elasticsearch-cloud-aws" do
   creates "/usr/share/elasticsearch/plugins/cloud-aws"
 end
 
+# data_bagのパラメータを渡してymlファイルを展開する。
 template "/etc/elasticsearch/elasticsearch.yml" do
   source "elasticsearch-cloud-aws.yml.erb"
   variables(
@@ -16,7 +18,8 @@ template "/etc/elasticsearch/elasticsearch.yml" do
   )
 end
 
-bash "" do
+# elasticsearchのパラメータを設定する。
+bash "set_sysconfig" do
   user "root"
   cwd "/etc/sysconfig/"
   code <<-EOC
@@ -27,6 +30,7 @@ bash "" do
   EOC
 end
 
+# サービスを開始する。
 service "elasticsearch" do
   supports :status => true, :restart => true
   action [:enable, :restart]
