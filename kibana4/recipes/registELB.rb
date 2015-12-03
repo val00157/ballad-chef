@@ -14,9 +14,9 @@ bash "ELB added Instance" do
     PATH=$PATH:/opt/aws/bin
     export AWS_ELB_HOME=/opt/aws/apitools/elb
     JAVA_HOME=/usr/lib/jvm/java
-    if [! -e ${JAVA_HOME}/bin/java ]; then
+    if [ ! -e ${JAVA_HOME}/bin/java ]; then
         JAVA_HOME=/usr/lib/jvm/jre
-        if [! -e ${JAVA_HOME}/bin/java ]; then
+        if [ ! -e ${JAVA_HOME}/bin/java ]; then
             JAVA_HOME=`which java | sed -e "s/\/bin\/java//"`
         fi
     fi
