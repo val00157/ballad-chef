@@ -10,15 +10,25 @@ bash "ELB added Instance" do
     "ELB_NAMES"  => params["ELB_NAMES"]
   )
   code <<-EOC
+    # パス設定、環境変数設定を行なう。
     PATH=$PATH:/opt/aws/bin
     export AWS_ELB_HOME=/opt/aws/apitools/elb
-    export JAVA_HOME=/usr/lib/jvm/java
+    JAVA_HOME=/usr/lib/jvm/java
+    if [! -e ${JAVA_HOME}/bin/java ]; then
+        JAVA_HOME=/usr/lib/jvm/jre
+        if [! -e ${JAVA_HOME}/bin/java ]; then
+            JAVA_HOME=`which java | sed -e "s/\/bin\/java//"`
+        fi
+    fi
+    export JAVA_HOME
 
+    # 自身のインスタンスIDを取得する。
     INSTANCE_ID=`curl http://169.254.169.254/latest/meta-data/instance-id 2> /dev/null`
 
+    # ELBにインスタンスを接続する。
     declare -a elbs=(${ELB_NAMES})
     for elb in ${elbs[@]}; do
-      elb-register-instances-with-lb ${elb} --instances ${INSTANCE_ID} --region ${REGION} --access-key-id ${ACCESS_KEY} --secret-key ${SECRET_KEY}
+        elb-register-instances-with-lb ${elb} --instances ${INSTANCE_ID} --region ${REGION} --access-key-id ${ACCESS_KEY} --secret-key ${SECRET_KEY}
     done
   EOC
 end
