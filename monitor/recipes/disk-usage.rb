@@ -1,3 +1,4 @@
+# ディスク容量モニタリングを設定するレシピ
 stack = node[:opsworks][:stack][:name] 
 params = data_bag_item("monitor", stack)["CloudWatch"]
 

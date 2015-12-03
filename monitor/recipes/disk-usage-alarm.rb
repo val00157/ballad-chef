@@ -1,3 +1,4 @@
+# ディスクモニタのCloudWatchメトリクスを登録するレシピ
 stack = node[:opsworks][:stack][:name] 
 params = data_bag_item("monitor", stack)["CloudWatch"]
 targets = params["disk-usage"]["MONITORING_MOUNT_DIRECTORY"].split(/\s+|\s*,\s*/)
