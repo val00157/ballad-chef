@@ -1,0 +1,64 @@
+#!/bin/bash
+#
+# /etc/rc.d/init.d/setBalladConfig
+#
+# chkconfig: - 75 20
+# description: setBalladConfig
+# processname: setBalladConfig
+#
+
+if [ -f ~/.bashrc ]; then
+    . ~/.bashrc
+fi
+
+# /etc/resolv.confにローカールDNSサフィックスを付加する
+setResolve() {
+  local RESOLV_PATH="/etc"
+  local RESOLV_FILE="resolv.conf"
+  local RESOLV_CONF="${RESOLV_PATH}/${RESOLV_FILE}"
+  local TEMP_PATH="/tmp/`date +%Y%m%d%H%M%S`"
+  local var=`grep ${1} ${RESOLV_CONF} | wc -l`
+  if [ $var -eq 0 ]; then
+    mkdir -p ${TEMP_PATH}
+    cp ${RESOLV_CONF} ${TEMP_PATH}/${RESOLV_FILE}
+
+    sed -e "s/^\(search [a-zA-Z0-9.\-]*\)/\1 ${1}.local/g"  ${TEMP_PATH}/${RESOLV_FILE} > ${RESOLV_CONF}
+    rm -rf ${TEMP_PATH}
+  fi
+}
+
+
+start() {
+  local INSTANCE_ID=`/usr/bin/curl -s http://169.254.169.254/latest/meta-data/instance-id`
+  export INSTANCE_NAME=`ec2-describe-instances | grep ${INSTANCE_ID} | grep $'\t'Name | cut -f5`
+  echo ${INSTANCE_NAME}
+
+  case  ${INSTANCE_NAME} in
+    ballad-dev*)
+        setResolve ballad-dev
+        cp -f /etc/td-agent/td-agent.dev /etc/td-agent/td-agent.conf
+        ;;
+    ballad-beta*)
+        setResolve ballad-dev
+        cp -f /etc/td-agent/td-agent.beta /etc/td-agent/td-agent.conf
+        ;;
+    val-ad*)
+        setResolve ballad
+        cp -f /etc/td-agent/td-agent.ballad /etc/td-agent/td-agent.conf
+        ;;
+    *)
+        return
+        ;;
+  esac
+
+  touch /var/log/td-agent/${INSTANCE_NAME}
+}
+
+case "$1" in
+  start)
+      start
+      ;;
+  *)
+      echo "setBalladConfig.sh start"
+esac
+
