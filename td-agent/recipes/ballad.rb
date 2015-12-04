@@ -15,6 +15,7 @@ params = data_bag_item("td-agent", stack)["td-agent"]
   end
 end
 
+# setBalladConfigを実行して稼働環境にあったconfigファイルに置き換える
 service "setBalladConfig" do
   action :start
 end

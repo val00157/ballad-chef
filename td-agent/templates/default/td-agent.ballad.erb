@@ -1,3 +1,5 @@
+# /etc/td-agent/td-agent.conf
+# ballad本番環境用ログ転送コンフィグファイル
 <source>
     type tail
     format /^(?<host>[^ ]*) (?<x-forwarded-for>.*) [^ ]* (?<user>[^ ]*) \[(?<time>[^\]]*)\] "(?<method>\S+)(?: +(?<path>[^ ]*) +\S*)?" (?<code>[^ ]*) (?<size>[^ ]*)(?: "(?<referer>[^\"]*)" "(?<agent>[^\"]*)")?$/
