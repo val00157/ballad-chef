@@ -1,6 +1,6 @@
 # AWSプラグインのインストール
 stack = node[:opsworks][:stack][:name] 
-params = data_bag_item("elasticsearch", stack)["elasticsearch"]
+params = data_bag_item(stack, "elasticsearch")
 
 # インストール(elasticsearchのバージョンが変ったらプラグインのバージョンも変更) 
 bash "elasticsearch-cloud-aws" do

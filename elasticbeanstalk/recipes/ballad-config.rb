@@ -1,7 +1,7 @@
 # Elastic Beanstalkコマンドラインツールを使ってballad環境設定を行なう。
 ## eb setenvコマンドでElastic Beanstalkの環境変数が設定されます。
 stack = node[:opsworks][:stack][:name] 
-params = data_bag_item("eb", stack)["eb"]
+params = data_bag_item(stack, "eb")
 
 bash "setEnv" do
   user "root"

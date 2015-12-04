@@ -1,7 +1,7 @@
 # kibanaを起動しているEC2インスタンスを指定したELBに接続する。
 # ELBは空白区切りで複数指定可能
 stack = node[:opsworks][:stack][:name] 
-params = data_bag_item("kibana4", stack)["kibana4"]
+params = data_bag_item(stack, "kibana4")
 
 bash "ELB added Instance" do
   user "root"

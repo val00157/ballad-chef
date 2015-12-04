@@ -7,7 +7,7 @@
 # All rights reserved - Do Not Redistribute
 #
 stack = node[:opsworks][:stack][:name] 
-params = data_bag_item("elasticsearch", stack)["elasticsearch"]
+params = data_bag_item(stack, "elasticsearch")
 
 # yumリポジトリ登録(elasticsearch1.5)
 bash 'yumu.repo' do
