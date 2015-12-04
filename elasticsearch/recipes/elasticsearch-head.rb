@@ -1,3 +1,4 @@
+# headプラグインのインストール
 bash "elasticsearch-head" do
   cwd "/usr/share/elasticsearch"
   code <<-EOC
