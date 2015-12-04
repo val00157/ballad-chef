@@ -1,6 +1,6 @@
 # ディスク容量モニタリングを設定するレシピ
 stack = node[:opsworks][:stack][:name] 
-params = data_bag_item(stack "monitor")["CloudWatch"]
+params = data_bag_item(stack, "monitor")["CloudWatch"]
 
 # ディスク容量モニタリングシェルを展開する
 template "/root/monitor-disk-usage.sh" do
