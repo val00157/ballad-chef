@@ -27,6 +27,7 @@ package "jq" do
   action :install
 end
 
+# リージョン情報を環境変数及びコマンドラインツールのコンフィグ情報に設定する。
 bash "set_region" do
   code <<-EOL
     target=${HOME}/.bashrc
