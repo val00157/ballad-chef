@@ -1,3 +1,5 @@
+# kibanaを起動しているEC2インスタンスを指定したELBに接続する。
+# ELBは空白区切りで複数指定可能
 stack = node[:opsworks][:stack][:name] 
 params = data_bag_item("kibana4", stack)["kibana4"]
 
@@ -25,8 +27,10 @@ bash "ELB added Instance" do
     # 自身のインスタンスIDを取得する。
     INSTANCE_ID=`curl http://169.254.169.254/latest/meta-data/instance-id 2> /dev/null`
 
-    # ELBにインスタンスを接続する。
+    # ELBの名前の配列を作成する。
     declare -a elbs=(${ELB_NAMES})
+
+    # ELBにインスタンスを接続する。
     for elb in ${elbs[@]}; do
         elb-register-instances-with-lb ${elb} --instances ${INSTANCE_ID} --region ${REGION} --access-key-id ${ACCESS_KEY} --secret-key ${SECRET_KEY}
     done
