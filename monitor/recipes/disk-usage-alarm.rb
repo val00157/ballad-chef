@@ -1,4 +1,5 @@
 # ディスクモニタのCloudWatchメトリクスを登録するレシピ
+# ARNの設定はカンマ区切りで複数可能
 stack = node[:opsworks][:stack][:name] 
 params = data_bag_item(stack, "monitor")["CloudWatch"]
 targets = params["disk-usage"]["MONITORING_MOUNT_DIRECTORY"].split(/\s+|\s*,\s*/)
